@@ -22,11 +22,23 @@ export async function shortUrl(req, res) {
 export async function getUrlById(req, res) {
     const { id } = req.params
 
-    try{
+    try {
         const url = await db.query(`SELECT id, "shortUrl", url FROM urls WHERE id = $1;`, [id])
         if (url.rows.length === 0) return res.sendStatus(404)
-        return res.status(200).send(url.rows[0])    
-    } catch(err){
+        return res.status(200).send(url.rows[0])
+    } catch (err) {
+        return res.status(500).send(err.message)
+    }
+}
+
+export async function openUrl(req, res) {
+    const { shortUrl } = req.params
+    
+    try{
+        const url = await db.query(`SELECT * FROM urls WHERE "shortUrl" = $1;`, [shortUrl])
+        if (url.rows.length === 0) return res.sendStatus(404)
+        return res.redirect(url.rows[0].url)
+    }catch(err){
         return res.status(500).send(err.message)
     }
 }
