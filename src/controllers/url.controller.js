@@ -37,6 +37,8 @@ export async function openUrl(req, res) {
     try{
         const url = await db.query(`SELECT * FROM urls WHERE "shortUrl" = $1;`, [shortUrl])
         if (url.rows.length === 0) return res.sendStatus(404)
+
+        await db.query(`UPDATE urls SET visitcount=visitcount+1 WHERE "shortUrl" = $1;`, [shortUrl])
         return res.redirect(url.rows[0].url)
     }catch(err){
         return res.status(500).send(err.message)
