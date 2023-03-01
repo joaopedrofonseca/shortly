@@ -28,7 +28,7 @@ export async function signIn(req, res) {
 
         const token = uuidV4()
         await db.query(`DELETE FROM sessions WHERE user_email = $1`, [email])
-        await db.query(`INSERT INTO sessions(user_email, token) VALUES ($1, $2);`, [email, token])
+        await db.query(`INSERT INTO sessions(user_email, token, user_id) VALUES ($1, $2, $3);`, [email, token, emailExists.rows[0].id])
         return res.status(200).send({token})
     } catch (err) {
         return res.status(500).send(err.message)
