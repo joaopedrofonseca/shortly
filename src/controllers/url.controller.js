@@ -78,7 +78,8 @@ export async function getUserInfos(req, res) {
          ARRAY_AGG(
             JSON_BUILD_OBJECT(
                 'id', urls.id,
-                 'shortUrl', urls."shortUrl", 
+                 'shortUrl', urls."shortUrl",
+                 'url', urls.url,
                  'visitCount', urls.visitcount
                  )) AS "shortenedUrls"
                  FROM users 
