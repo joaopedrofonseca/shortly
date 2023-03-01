@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { deleteUrl, getUrlById, openUrl, shortUrl } from "../controllers/url.controller.js"
+import { deleteUrl, getUrlById, getUserInfos, openUrl, shortUrl } from "../controllers/url.controller.js"
 import { validateSchema } from "../middlewares/validateSchema.js"
 import shortUrlSchema from "../schemas/shortUrlSchema.js"
 
@@ -9,5 +9,6 @@ urlRouter.post('/urls/shorten', validateSchema(shortUrlSchema), shortUrl)
 urlRouter.get('/urls/:id', getUrlById)
 urlRouter.get('/urls/open/:shortUrl', openUrl)
 urlRouter.delete('/urls/:id', deleteUrl)
+urlRouter.get('/users/me', getUserInfos)
 
 export default urlRouter

@@ -50,16 +50,44 @@ export async function deleteUrl(req, res) {
     const { authorization } = req.headers
     const token = authorization?.replace("Bearer ", "")
 
-    try{
+    try {
         const urlExists = await db.query(`SELECT * FROM urls WHERE id = $1;`, [id])
-        if(urlExists.rows.length === 0) return res.sendStatus(404)
+        if (urlExists.rows.length === 0) return res.sendStatus(404)
 
         const urlAvailable = await db.query(`SELECT * FROM urls JOIN sessions ON urls."userId" = sessions.user_id WHERE urls.id = $1 AND sessions.token = $2;`, [id, token])
         if (urlAvailable.rows.length === 0) return res.sendStatus(401)
 
         await db.query(`DELETE FROM urls WHERE id = $1 AND "userId" = $2;`, [id, urlAvailable.rows[0].userId])
         return res.sendStatus(204)
-    }catch(err){
+    } catch (err) {
+        return res.status(500).send(err.message)
+    }
+}
+
+export async function getUserInfos(req, res) {
+    const { authorization } = req.headers
+    const token = authorization?.replace("Bearer ", "")
+
+    try {
+        const tokenExists = await db.query(`SELECT * FROM sessions WHERE token = $1;`, [token])
+        if (tokenExists.rows.length === 0) return res.sendStatus(401)
+
+        const infos = await db.query(`SELECT users.id,
+         users.name, 
+         SUM(urls.visitcount) AS "visitCount", 
+         ARRAY_AGG(
+            JSON_BUILD_OBJECT(
+                'id', urls.id,
+                 'shortUrl', urls."shortUrl", 
+                 'visitCount', urls.visitcount
+                 )) AS "shortenedUrls"
+                 FROM users 
+                 JOIN urls ON users.id = urls."userId" 
+                 WHERE users.id=$1 
+                 GROUP BY users.id;`, [tokenExists.rows[0].user_id])
+        return res.status(200).send(infos.rows[0])
+
+    } catch (err) {
         return res.status(500).send(err.message)
     }
 }
