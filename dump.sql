@@ -27,7 +27,8 @@ SET default_table_access_method = heap;
 CREATE TABLE public.sessions (
     id integer NOT NULL,
     user_email text NOT NULL,
-    token text NOT NULL
+    token text NOT NULL,
+    "createdAt" timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -101,8 +102,7 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 -- Data for Name: sessions; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.sessions VALUES (1, 'fefe@hotmail.com', '17a33cf0-c1b2-4253-bce9-e53e94ebd973');
-INSERT INTO public.sessions VALUES (2, 'fefe@hotmail.com', '4ddf2e86-78de-4793-98fb-a6e0ea15bbef');
+INSERT INTO public.sessions VALUES (2, 'fefe@hotmail.com', '2d8fd68e-f168-468c-ab1c-78c06dc8a7aa', '2023-03-01 08:00:34.923355');
 
 
 --
