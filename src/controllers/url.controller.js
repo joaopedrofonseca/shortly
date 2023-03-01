@@ -11,12 +11,9 @@ export async function shortUrl(req, res) {
         const isTokenActive = await db.query(`SELECT * FROM sessions WHERE token = $1;`, [token])
         if(isTokenActive.rows.length === 0) return res.sendStatus(401)
 
-        await db.query(`INSERT INTO urls(url, "shortUrl", "userId") VALUES ($1, $2, $3);` [url, shortUrl, isTokenActive.rows[0].id])
-        const lastUrl = await db.query(`SELECT * FROM urls ORDER BY id ASC LIMIT 1;`)
-        return res.status(201).send({
-            id: lastUrl.rows[0].id,
-            shortUrl: shortUrl
-        })
+        await db.query(`INSERT INTO urls(url, "shortUrl", "userId") VALUES ($1, $2, $3);`, [url, shortUrl, isTokenActive.rows[0].id])
+        const lastUrl = await db.query(`SELECT id,"shortUrl" FROM urls WHERE "shortUrl" = $1;`, [shortUrl])
+        return res.status(201).send(lastUrl.rows[0])
     }catch(err){
         return res.status(500).send(err.message)
     }
