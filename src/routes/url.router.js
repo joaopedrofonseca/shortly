@@ -10,5 +10,6 @@ urlRouter.get('/urls/:id', getUrlById)
 urlRouter.get('/urls/open/:shortUrl', openUrl)
 urlRouter.delete('/urls/:id', deleteUrl)
 urlRouter.get('/users/me', getUserInfos)
+urlRouter.get('/ranking', )
 
 export default urlRouter

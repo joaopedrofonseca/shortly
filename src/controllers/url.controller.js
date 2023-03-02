@@ -92,3 +92,21 @@ export async function getUserInfos(req, res) {
         return res.status(500).send(err.message)
     }
 }
+
+export async function getRanking(req, res) {
+    try{
+        const ranking = await db.query(`
+        SELECT users.id,users.name,
+         COUNT(urls."userId") AS "linksCount",
+         SUM(urls.visitcount) AS "visitCount" 
+         FROM users 
+         JOIN urls ON users.id = urls."userId" 
+         GROUP BY users.id 
+         ORDER BY "visitCount" 
+         LIMIT 10;
+        `)
+        return res.status(200).send(ranking)        
+    }catch(err){
+        return res.status(500).send(err.message)
+    }
+}
